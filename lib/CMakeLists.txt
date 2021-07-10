@@ -103,13 +103,6 @@ endif ()
 include(CheckIncludeFiles)
 CHECK_INCLUDE_FILES(windows.h HAS_WINDOWS_H)
 
-#check missing vasprintf on windows
-include(CheckFunctionExists)
-check_function_exists(vasprintf HAS_VASPRINTF)
-if (NOT HAS_VASPRINTF)
-    target_compile_definitions(SoapySDR PRIVATE -DMISSING_VASPRINTF)
-endif()
-
 if(APPLE)
     #fixes issue with duplicate module registry when using application bundle
     target_link_libraries(SoapySDR PUBLIC "-flat_namespace")

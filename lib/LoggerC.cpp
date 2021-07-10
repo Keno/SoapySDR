@@ -37,20 +37,6 @@ static SoapySDRLogLevel getDefaultLogLevel(void)
 }
 
 /***********************************************************************
- * Compatibility for vasprintf when missing
- **********************************************************************/
-#ifdef MISSING_VASPRINTF
-int vasprintf(char **strp, const char *fmt, va_list ap)
-{
-    int r = _vscprintf(fmt, ap);
-    if (r < 0) return r;
-    *strp = (char *)malloc(r+1);
-    if (*strp == nullptr) return -1;
-    return vsprintf_s(*strp, r+1, fmt, ap);
-}
-#endif
-
-/***********************************************************************
  * ANSI terminal colors for default logger
  **********************************************************************/
 #define ANSI_COLOR_RED     "\x1b[31m"
@@ -95,11 +81,10 @@ void SoapySDR_log(const SoapySDRLogLevel logLevel, const char *message)
 void SoapySDR_vlogf(const SoapySDRLogLevel logLevel, const char *format, va_list argList)
 {
     if (logLevel > registeredLogLevel) return;
-    char *message = NULL;
-    if (vasprintf(&message, format, argList) != -1)
+    char message[8*1024];
+    if (std::vsnprintf(message, sizeof(message), format, argList) > 0)
     {
         SoapySDR_log(logLevel, message);
-        free(message);
     }
 }
 
