@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Josh Blum
+// Copyright (c) 2014-2021 Josh Blum
 // SPDX-License-Identifier: BSL-1.0
 
 #include <SoapySDR/Logger.h>
@@ -37,9 +37,9 @@ static SoapySDRLogLevel getDefaultLogLevel(void)
 }
 
 /***********************************************************************
- * Compatibility for vasprintf under MSVC
+ * Compatibility for vasprintf when missing
  **********************************************************************/
-#ifdef _MSC_VER
+#ifdef MISSING_VASPRINTF
 int vasprintf(char **strp, const char *fmt, va_list ap)
 {
     int r = _vscprintf(fmt, ap);
